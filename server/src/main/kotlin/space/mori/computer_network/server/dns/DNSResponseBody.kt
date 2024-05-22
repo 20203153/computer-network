@@ -1,4 +1,4 @@
-package space.mori.computer_network.dns
+package space.mori.computer_network.server.dns
 
 import java.nio.ByteBuffer
 import java.nio.ByteOrder

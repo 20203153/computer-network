@@ -1,4 +1,4 @@
-package space.mori.computer_network.dns
+package space.mori.computer_network.server.dns
 
 class DNSQuestionBody(
     val name: String,
@@ -102,6 +102,18 @@ class DNSQuestionBody(
             val QClass = (arr[currentIndex].toUByte().toInt() shl 8) or arr[currentIndex + 1].toUByte().toInt()
 
             return DNSQuestionBody(domain, QTYPE.fromInt(QType), QCLASS.fromInt(QClass))
+        }
+
+        fun ipv4ToReverse(ip: String): String {
+            return ip.split(".").reversed().joinToString(".") + ".in-addr.arpa"
+        }
+
+        fun ipv6ToReverse(ip: String): String {
+            return ip.split(":")
+                .joinToString("") { it.padStart(4, '0') }
+                .reversed()
+                .map { it.toString() }
+                .joinToString(".") + ".ip6.arpa"
         }
 
         fun test(): DNSQuestionBody {

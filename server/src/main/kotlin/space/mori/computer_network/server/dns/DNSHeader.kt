@@ -1,4 +1,4 @@
-package space.mori.computer_network.dns
+package space.mori.computer_network.server.dns
 
 // https://stackoverflow.com/a/64408275/11516704
 fun getBit(value: Int, position: Int): Int {

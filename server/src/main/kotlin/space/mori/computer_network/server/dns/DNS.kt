@@ -1,4 +1,4 @@
-package space.mori.computer_network.dns
+package space.mori.computer_network.server.dns
 
 import java.net.DatagramPacket
 import java.net.DatagramSocket
@@ -27,7 +27,7 @@ fun requestDNS(domain: String, type: DNSQuestionBody.QTYPE, server: String = "1.
 
         dsoc.close()
 
-        println("\nParsed DNSHeader from response")
+        if(!silent) println("\nParsed DNSHeader from response")
         val responseHeader = DNSHeader.fromByteArray(buffer.sliceArray(0 until 12))
         if(!silent) {
             println("Transaction ID: ${responseHeader.tid}")
@@ -64,10 +64,10 @@ fun requestDNS(domain: String, type: DNSQuestionBody.QTYPE, server: String = "1.
                 DNSQuestionBody.QTYPE.A -> responseBody.data.joinToString(".") {
                     it.toUByte().toString(10).padStart(2, '0')
                 }
-
                 DNSQuestionBody.QTYPE.AAAA -> responseBody.data.joinToString(" ") {
                     it.toUByte().toString(16).padStart(2, '0')
                 }
+                DNSQuestionBody.QTYPE.PTR -> DNSQuestionBody.decodeDomainName(responseBody.data).first
 
                 else -> "";
             }
@@ -78,8 +78,7 @@ fun requestDNS(domain: String, type: DNSQuestionBody.QTYPE, server: String = "1.
             nextIndex = idx
         }
     } catch(e: SocketTimeoutException) {
-        println("Socket Timeout: $domain on SERVER $server")
-        result = ""
+        throw Exception("Socket Timeout: $domain on SERVER $server")
     } finally {
         dsoc.close()
     }
